@@ -1,58 +1,60 @@
-import React, { useState, useEffect } from 'react';
-import { Text, View, Vibration, Button } from 'react-native';
-import { Audio } from 'expo-av';
+// App.js
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import Homepage from './Homepage';
+import Community from './Community';
+import CurrentSong from './CurrentSong';
+import Settings from './Settings';
 
-export default function App() {
-  const [sound, setSound] = useState();
-  const [isPlaying, setIsPlaying] = useState(false);
+const Stack = createNativeStackNavigator();
 
-  useEffect(() => {
-    return sound
-      ? () => {
-          sound.unloadAsync();
-        }
-      : undefined;
-  }, [sound]);
+// Define a custom tab bar component
+const CustomTabBar = ({ navigation }) => (
+  <View style={styles.tabBar}>
+    <TouchableOpacity onPress={() => navigation.navigate('Homepage')} style={styles.tabItem}>
+      <Text>Home</Text>
+    </TouchableOpacity>
+    <TouchableOpacity onPress={() => navigation.navigate('Community')} style={styles.tabItem}>
+      <Text>Community</Text>
+    </TouchableOpacity>
+    <TouchableOpacity onPress={() => navigation.navigate('CurrentSong')} style={styles.tabItem}>
+      <Text>Current Song</Text>
+    </TouchableOpacity>
+    <TouchableOpacity onPress={() => navigation.navigate('Settings')} style={styles.tabItem}>
+      <Text>Settings</Text>
+    </TouchableOpacity>
+  </View>
+);
 
-  const playSound = async () => {
-    const { sound } = await Audio.Sound.createAsync(
-      require('./assets/music.mp3')
-    );
-    setSound(sound);
-    await sound.playAsync();
-    setIsPlaying(true);
-
-    // Analyze audio spectrum and map to vibration parameters
-    sound.setOnPlaybackStatusUpdate(async (status) => {
-      if (status.didJustFinish) {
-        setIsPlaying(false);
-      }
-      const { isLoaded, positionMillis, durationMillis } = status;
-      if (isLoaded) {
-        const currentTime = positionMillis / 1000;
-        const totalTime = durationMillis / 1000;
-
-        // Example: Generate vibration based on audio position
-        const intensity = Math.abs(Math.sin((currentTime / totalTime) * Math.PI));
-
-        // Example: Vibrate with intensity mapped to audio position
-        const duration = Math.floor(intensity * 1000);
-        Vibration.vibrate(duration > 0 ? duration : 1); // Ensure duration is non-zero
-      }
-    });
-  };
-
-  const pauseSound = async () => {
-    if (sound) {
-      await sound.pauseAsync();
-      setIsPlaying(false);
-    }
-  };
-
+const App = () => {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>{isPlaying ? 'Music is playing' : 'Music is not playing'}</Text>
-      <Button title={isPlaying ? 'Pause Music' : 'Play Music'} onPress={isPlaying ? pauseSound : playSound} />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Homepage" component={Homepage} />
+        <Stack.Screen name="Community" component={Community} />
+        <Stack.Screen name="CurrentSong" component={CurrentSong} />
+        <Stack.Screen name="Settings" component={Settings} />
+        {/* You can add more screens here */}
+      </Stack.Navigator>
+      {/* Your custom tab bar */}
+      <CustomTabBar />
+    </NavigationContainer>
   );
-}
+};
+
+const styles = StyleSheet.create({
+  tabBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 10,
+    backgroundColor: '#eee',
+  },
+  tabItem: {
+    flex: 1,
+    alignItems: 'center',
+  },
+});
+
+export default App;
