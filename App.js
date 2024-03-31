@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   tabBar: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    paddingVertical: 10,
+    paddingVertical: 30,
     backgroundColor: '#eee',
   },
   tabItem: {
