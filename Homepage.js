@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import MusicList from './MusicList'; // Importing the MusicList component
 
 // Dummy data for the music library
 const musicData = [
@@ -13,6 +14,11 @@ const musicData = [
 
 const Homepage = () => {
   const navigation = useNavigation();
+  const [showMusicList, setShowMusicList] = useState(false);
+
+  const toggleMusicList = () => {
+    setShowMusicList(!showMusicList);
+  };
 
   // Function to render each item in the music library
   const renderSong = ({ item }) => (
@@ -40,6 +46,12 @@ const Homepage = () => {
         showsHorizontalScrollIndicator={false} // Optional: to hide the horizontal scroll indicator
         style={styles.musicData}
       />
+      {/* Conditional rendering of MusicList component */}
+      {showMusicList && <MusicList />}
+      {/* Button to toggle MusicList visibility */}
+      <TouchableOpacity onPress={toggleMusicList} style={styles.button}>
+        <Text style={styles.buttonText}>{showMusicList ? "Hide Music List" : "Show Music List"}</Text>
+      </TouchableOpacity>
       <Text style={styles.header}> Music Library</Text>
       {/* FlatList to display the music library */}
       <FlatList
@@ -85,6 +97,18 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
+  button: {
+    backgroundColor: '#007AFF',
+    padding: 10,
+    borderRadius: 5,
+    margin: 20,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  }
 });
 
 export default Homepage;

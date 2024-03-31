@@ -7,6 +7,7 @@ import Homepage from './Homepage';
 import Community from './Community';
 import CurrentSong from './CurrentSong';
 import Settings from './Settings';
+import MusicList from './MusicList'
 
 const Stack = createNativeStackNavigator();
 
@@ -40,6 +41,7 @@ const App = () => {
         <Stack.Screen name="Community" component={Community} />
         <Stack.Screen name="CurrentSong" component={CurrentSong} />
         <Stack.Screen name="Settings" component={Settings} />
+        <Stack.Screen name="MusicList" component={MusicList} />
         {/* You can add more screens here */}
       </Stack.Navigator>
       {/* Your custom tab bar */}
